@@ -1,34 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState} from "react";
 import './App.css'
+import { getWeatherApi } from "./api/weather-api";
+// import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [weather,setWeather]=useState(null)
+  const [loading,setLoading]=useState(false)
+  const [error,setError]=useState(null)
+  const [city,setCity]= useState('')
+   const [query, setQuery] = useState("");
+useEffect(()=>{
+const fetchWeather=async()=>{
+    if (!city.trim()) return;
+    try{
+setLoading(true)
+setError(null);
+    const response=await getWeatherApi(city)
+    // console.log("API response:", response)
+       setWeather(response.data)
+       
+  } catch (e){
+    setError(e.message);
+  setWeather(null);
+  }finally{
+      setLoading(false)
+
+    }
+  };
+  
+  fetchWeather()
+},[city])
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+     <div style={{ fontFamily: "Arial", padding: "20px" }}>
+      <h1>Weather App</h1>
+      {loading && (<p>Loading...</p>)}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+<input 
+type='text'
+value={query}
+onChange={(e)=>setQuery(e.target.value)}
+placeholder="Введіть місто"
+style={{ padding: "8px", marginRight: "10px" }}
+/>
+<button onClick={()=>setCity(query)}
+   style={{ padding: "8px", cursor: "pointer" }}>
+     Пошук
+</button>
+      {weather?.main && (
+        <div>
+          <h2>{weather.name}</h2>
+          <p>🌡 Температура: {weather.main.temp}°C</p>
+          <p>💧 Вологість: {weather.main.humidity}%</p>
+          <p>💨 Вітер: {weather.wind.speed} м/с</p>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    )}
+       </div>
   )
 }
 
