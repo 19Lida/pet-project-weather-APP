@@ -17,10 +17,6 @@ export const getWeatherApi = async (city) => {
       lang: "ua",
     },
     });
-    // 🔥 Перевіряємо, чи API не повернуло помилку
-  // if (response.data.cod && response.data.cod !== 200) {
-  //   throw new Error("Місто не знайдено");
-  // }
 
   return response.data;
 };

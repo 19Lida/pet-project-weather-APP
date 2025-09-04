@@ -17,10 +17,10 @@ setLoading(true)
 setError(null);
     const response=await getWeatherApi(city)
     // console.log("API response:", response)
-       setWeather(response.data)
+       setWeather(response)
        
   } catch (e){
-    setError(e.message);
+    setError("❌ Місто не знайдено!");
   setWeather(null);
   }finally{
       setLoading(false)
